@@ -92,6 +92,7 @@ function Row({ children }) {
 }
 
 function Body({ data, render }) {
+  if (!data.length) return <Empty>The Cabin is Emtpy now</Empty>;
   return <StyledBody>{data.map(render)}</StyledBody>;
 }
 
