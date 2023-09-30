@@ -14,21 +14,20 @@ export function useBookings() {
   // { field: "totalPrice", value: 5000, method: "gte" },
 
   //2. SORT
-
   const sortByRaw = searchParams.get("sortBy") || "startDate-desc";
-
   const [field, direction] = sortByRaw.split("-");
-
   const sortBy = { field, direction };
+
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
 
   const {
     isLoading,
-    data: bookings,
+    data: { data: bookings, count } = {},
     error,
   } = useQuery({
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookingsApi({ filter, sortBy }),
+    queryKey: ["bookings", filter, sortBy, page],
+    queryFn: () => getBookingsApi({ filter, sortBy, page }),
   });
 
-  return { isLoading, bookings, error };
+  return { isLoading, bookings, error, count };
 }
