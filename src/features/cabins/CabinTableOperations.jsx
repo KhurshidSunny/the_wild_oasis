@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import TableOperations from "../../ui/TableOperations";
 import Filter from "../../ui/Filter";
-import SortBy from "../../ui/sortBy";
+import SortBy from "../../ui/SortBy";
 function CabinTableOperations() {
   return (
     <div>
       <TableOperations>
         <Filter
-          fieldName="discount"
+          filterField="discount"
           options={[
             { value: "all", label: "All" },
             { value: "no-discount", label: "No-discount" },
