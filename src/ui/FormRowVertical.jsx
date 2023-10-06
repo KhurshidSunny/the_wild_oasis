@@ -38,7 +38,7 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function FormRow({ label, error, children }) {
+function FormRowVertical({ label, error, children }) {
   return (
     <StyledFormRow>
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
@@ -48,4 +48,4 @@ function FormRow({ label, error, children }) {
   );
 }
 
-export default FormRow;
+export default FormRowVertical;

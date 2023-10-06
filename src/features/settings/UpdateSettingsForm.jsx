@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useQueries } from "@tanstack/react-query";
 import Form from "../../ui/Form";
-import FormRow from "../../ui/FormRow";
+import FormRow from "../../ui/FormRowVertical";
 import Input from "../../ui/Input";
 import { getSettings } from "../../services/apiSettings";
 import { useSettings } from "./useSettings";
