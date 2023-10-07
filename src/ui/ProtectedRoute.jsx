@@ -21,6 +21,7 @@ function ProtectedRoute({ children }) {
   const { isLoading, isAuthenticated } = useUser();
 
   // 2.if there is no authenticated user, redirect to the login page
+  // NOTE: we use useEffect here because navigate hook is called usually in another function not on the top level of the componenet, so thats why we use useEffect
   useEffect(
     function () {
       if (!isAuthenticated && !isLoading) navigate("/login");
