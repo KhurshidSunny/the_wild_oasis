@@ -12,10 +12,10 @@ export function useUpdateUser() {
   } = useMutation({
     mutationFn: updateCurrentUser,
 
-    onSuccess: () => {
+    onSuccess: ({ user }) => {
       toast.success("User account successfully updated");
       // setting cache value mannually
-      // queryClient.setQueryData("user", user);
+      queryClient.setQueryData(["user"], user);
       queryClient.invalidateQueries({
         queryKey: ["user"],
       });
