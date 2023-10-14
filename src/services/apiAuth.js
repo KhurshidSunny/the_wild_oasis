@@ -28,7 +28,6 @@ export async function login({ email, password }) {
     throw new Error(error.message);
   }
 
-  console.log(user);
   return user;
 }
 
