@@ -10,6 +10,7 @@ import Input from "../../ui/Input";
 import { useUser } from "./useUser";
 import FormRowVertical from "../../ui/FormRowVertical";
 import { useUpdateUser } from "./useUpdateUser";
+import { useNavigate } from "react-router-dom";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
@@ -22,6 +23,7 @@ function UpdateUserDataForm() {
 
   const [fullName, setFullName] = useState(currentFullName);
   const [avatar, setAvatar] = useState(null);
+  const navigate = useNavigate();
 
   const { isUpdating, updateUser } = useUpdateUser();
 
@@ -34,6 +36,7 @@ function UpdateUserDataForm() {
         onSuccess: () => {
           setAvatar(null);
           e.target.reset();
+          navigate("/");
         },
       }
     );

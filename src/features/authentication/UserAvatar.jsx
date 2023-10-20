@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { useUser } from "./useUser";
+import { getCurrentUser } from "../../services/apiAuth";
+import LoginForm from "./LoginForm";
+import { ru } from "date-fns/locale";
 
 const StyledUserAvatar = styled.div`
   display: flex;
@@ -25,7 +28,6 @@ const Avatar = styled.img`
 function UserAvatar() {
   const { user } = useUser();
 
-  console.log(user);
   const { fullName, avatar } = user.user_metadata;
   return (
     <div>
