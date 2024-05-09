@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Tag from "../../ui/Tag";
 import { Flag } from "../../ui/Flag";
 import Button from "../../ui/Button";
 import CheckoutButton from "./CheckoutButton";
-import { Link, useNavigate } from "react-router-dom";
 
 const StyledTodayItem = styled.li`
   display: grid;
@@ -28,7 +28,7 @@ const Guest = styled.div`
 
 function TodayItem({ activity }) {
   const { id, status, guests, numNights } = activity;
-  const navigate = useNavigate();
+
   return (
     <StyledTodayItem>
       {/* Tags for arrving or departing  */}
@@ -36,10 +36,7 @@ function TodayItem({ activity }) {
       {status === "checked-in" && <Tag type="blue">Departing</Tag>}
 
       {/* showing country flag of the client  */}
-      <Flag
-        src={guests.countryFlag}
-        alt={`the country flag of ${guests.country}`}
-      />
+      <Flag src={guests.countryFlag} alt={`flag of ${guests.country}`} />
       <Guest>{guests.fullName}</Guest>
       <div>{numNights} nights</div>
 

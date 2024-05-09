@@ -4,11 +4,7 @@ import { signup as signupApi } from "../../services/apiAuth";
 import toast from "react-hot-toast";
 
 export function useSignup() {
-  const {
-    isLoading,
-    mutate: signup,
-    error,
-  } = useMutation({
+  const { isLoading, mutate: signup } = useMutation({
     mutationFn: signupApi,
 
     onSuccess: (user) => {

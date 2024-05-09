@@ -12,14 +12,10 @@ export function useRecentBookings() {
 
   const queryDate = subDays(new Date(), numDays).toISOString();
 
-  const {
-    isLoading,
-    data: bookings,
-    error,
-  } = useQuery({
+  const { isLoading, data: bookings } = useQuery({
     queryFn: () => getBookingsAfterDate(queryDate),
     queryKey: ["bookings", `last${numDays}`],
   });
 
-  return { isLoading, bookings, error, numDays };
+  return { isLoading, bookings };
 }

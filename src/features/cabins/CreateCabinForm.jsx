@@ -1,33 +1,30 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import styled from "styled-components";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
+import { useForm } from "react-hook-form";
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-import { createEditCabin } from "../../services/apiCabins";
 import FormRow from "../../ui/FormRowVertical";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
 
 function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
-  const { id: editId, ...editValues } = cabinToEdit;
-
   const { isCreating, createCabin } = useCreateCabin();
   const { isEditing, editCabin } = useEditCabin();
+  const isWorking = isCreating || isEditing;
+
+  const { id: editId, ...editValues } = cabinToEdit;
 
   const isEditSession = Boolean(editId);
+
   const { register, handleSubmit, getValues, formState, reset } = useForm({
     defaultValues: isEditSession ? editValues : {},
   });
 
   const { errors } = formState;
-  const isWorking = isCreating || isEditing;
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
@@ -54,7 +51,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   }
 
   function onError(errors) {
-    console.log(errors);
+    // console.log(errors);
   }
 
   return (
@@ -80,7 +77,7 @@ function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
             required: "This field is required",
             min: {
               value: 1,
-              message: "There should at least 1 guest",
+              message: "Capacity should be at least 1",
             },
           })}
         />

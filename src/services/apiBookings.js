@@ -11,20 +11,21 @@ export async function getBookings({ filter, sortBy, page }) {
       { count: "exact" }
     );
 
-  const from = (page - 1) * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
-
-  // 1. PAGINATION
-  if (page) query = query.range(from, to);
-
-  // 2. FILTER
+  // 1. FILTER
   if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
 
-  // 3. SORTING
+  // 2. SORT
   if (sortBy)
     query = query.order(sortBy.field, {
       ascending: sortBy.direction === "asc",
     });
+
+  // 3. PAGINATION
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    query = query.range(from, to);
+  }
 
   const { data, error, count } = await query;
 

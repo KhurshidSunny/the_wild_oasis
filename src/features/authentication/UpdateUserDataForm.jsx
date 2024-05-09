@@ -36,7 +36,7 @@ function UpdateUserDataForm() {
         onSuccess: () => {
           setAvatar(null);
           e.target.reset();
-          navigate("/");
+          // navigate("/");
         },
       }
     );

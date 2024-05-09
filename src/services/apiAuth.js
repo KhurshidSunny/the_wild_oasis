@@ -19,7 +19,7 @@ export async function signup({ fullName, email, password }) {
 }
 
 export async function login({ email, password }) {
-  const { data: user, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -28,7 +28,7 @@ export async function login({ email, password }) {
     throw new Error(error.message);
   }
 
-  return user;
+  return data;
 }
 
 export async function logout() {
@@ -45,22 +45,19 @@ export async function getCurrentUser() {
   if (!session.session) return null;
 
   const { data, error } = await supabase.auth.getUser();
-  console.log(data);
+  // console.log(data);
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
+  if (error) throw new Error(error.message);
   return data?.user;
 }
 
 export async function updateCurrentUser({ password, fullName, avatar }) {
-  let userData;
+  let updateData;
 
   // 1. Update user password OR fullName
-  if (password) userData = { password };
-  if (fullName) userData = { data: { fullName } };
-  const { data, error } = await supabase.auth.updateUser(userData);
+  if (password) updateData = { password };
+  if (fullName) updateData = { data: { fullName } };
+  const { data, error } = await supabase.auth.updateUser(updateData);
 
   if (error) {
     throw new Error(error.message);
@@ -88,9 +85,6 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
     },
   });
 
-  if (error2) {
-    throw new Error(error2.message);
-  }
-
+  if (error2) throw new Error(error2.message);
   return updatedUser;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function useOutsideClick(handler, listenCapturing = true) {
+function useOutsideClick(handler, listenCapturing = true) {
   const ref = useRef();
 
   // click for closing window outside the window

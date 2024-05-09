@@ -12,10 +12,11 @@ import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useBooking } from "./useBooking";
+
 import Spinner from "../../ui/Spinner";
 import { useNavigate } from "react-router-dom";
 import { HiArrowUpOnSquare } from "react-icons/hi2";
-import useCheckout from "../check-in-out/useCheckout";
+import { useCheckout } from "../check-in-out/useCheckout";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteBooking } from "./useDeleteBooking";
@@ -78,7 +79,8 @@ function BookingDetail() {
 
           <Modal.Window name="delete">
             <ConfirmDelete
-              resourceName="bookings"
+              resourceName="booking"
+              disabled={isDeleting}
               onConfirm={() =>
                 deleteBooking(bookingId, {
                   onSettled: () => {
@@ -86,7 +88,6 @@ function BookingDetail() {
                   },
                 })
               }
-              disabled={isDeleting}
             />
           </Modal.Window>
         </Modal>

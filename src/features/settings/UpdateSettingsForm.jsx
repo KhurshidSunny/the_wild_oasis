@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { useQueries } from "@tanstack/react-query";
+
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRowVertical";
 import Input from "../../ui/Input";
-import { getSettings } from "../../services/apiSettings";
+
 import { useSettings } from "./useSettings";
 import Spinner from "../../ui/Spinner";
 import { useUpdateSetting } from "./useUpdateSetting";
@@ -21,14 +21,14 @@ function UpdateSettingsForm() {
 
   const { isUpdating, updateSetting } = useUpdateSetting();
 
+  if (isLoading) return <Spinner />;
+
   function handleUpdate(e, field) {
     const { value } = e.target;
 
     if (!value) return;
     updateSetting({ [field]: value });
   }
-
-  if (isLoading) return <Spinner />;
 
   return (
     <Form>
@@ -56,9 +56,9 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="max-guests"
-          defaultValue={maxBookingLength}
+          defaultValue={maxGuestsPerBooking}
           disabled={isUpdating}
-          onBlur={(e) => handleUpdate(e, "maxBookingLength")}
+          onBlur={(e) => handleUpdate(e, "maxGuestsPerBooking")}
         />
       </FormRow>
 

@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import BookingDataBox from "../../features/bookings/BookingDataBox";
 
@@ -8,17 +7,17 @@ import Heading from "../../ui/Heading";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Spinner from "../../ui/Spinner";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useBooking } from "../bookings/useBooking";
-import Spinner from "../../ui/Spinner";
+import { useEffect, useState } from "react";
+
 import Checkbox from "../../ui/Checkbox";
 import { formatCurrency } from "../../utils/helpers";
-import useCheckin from "./useCheckin";
-import { getSettings } from "../../services/apiSettings";
+import { useCheckin } from "./useCheckin";
+
 import { useSettings } from "../settings/useSettings";
-import { format } from "date-fns";
-import toast from "react-hot-toast";
 
 const Box = styled.div`
   /* Box */
@@ -41,7 +40,7 @@ function CheckinBooking() {
 
   const { checkin, isCheckingIn } = useCheckin();
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || isLoadingSetting) return <Spinner />;
 
   const {
     id: bookingId,

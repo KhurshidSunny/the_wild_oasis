@@ -3,9 +3,6 @@
 import styled from "styled-components";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
 
 import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
@@ -60,6 +57,7 @@ const StyledButton = styled.div`
 
 function CabinRow({ cabin }) {
   const { isCreating, createCabin } = useCreateCabin();
+  const { isDeleting, deleteCabin } = useDeleteCabin();
 
   const {
     id: cabinId,
@@ -82,10 +80,8 @@ function CabinRow({ cabin }) {
     });
   }
 
-  const { isDeleting, deleteCabin } = useDeleteCabin();
-
   return (
-    <Table.Row columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
+    <Table.Row>
       <Img src={image} />
       <Cabin>{name}</Cabin>
       <div>fits up to {maxCapacity} guests</div>
@@ -95,7 +91,8 @@ function CabinRow({ cabin }) {
       ) : (
         <span>&mdash;</span>
       )}
-      <StyledButton>
+      {/* <StyledButton> */}
+      <div>
         <Modal>
           <Menus.Menu>
             <Menus.Toggle id={cabinId} />
@@ -127,7 +124,8 @@ function CabinRow({ cabin }) {
             </Modal.Window>
           </Menus.Menu>
         </Modal>
-      </StyledButton>
+      </div>
+      {/* </StyledButton> */}
     </Table.Row>
   );
 }
