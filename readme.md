@@ -1,4 +1,4 @@
-# Project Title
+# Wild Oasis
 
 Wild Oasis is a comprehensive Hotel Management System designed to streamline hotel operations and enhance customer service. Authorized hotel employees can manage various tasks such as booking cabins for customers, adding new cabins, viewing all bookings with check-in and check-out details, and adding other hotel employees as system users. Employees also have the ability to modify app settings. The hotel manager can access records for the past 7, 30, and 90 days, providing valuable insights into hotel performance. Additionally, employees can filter bookings by check-in, check-out, and unconfirmed status, and sort bookings by different parameters, ensuring efficient management of hotel operations.
 
