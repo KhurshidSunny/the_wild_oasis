@@ -58,3 +58,4 @@ Start the server
 - React Router
 - Recharts
 - hero icons
+- react hook forms
