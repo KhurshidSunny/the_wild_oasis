@@ -1,54 +1,68 @@
-const Cabin = require('../models/cabinModel')
+const Cabin = require("../models/cabinModel");
+const catchAsync = require("../utils/catchAsync");
 
+const getAllCabins = catchAsync(async (req, res, next) => {
+  const cabins = await Cabin.find();
 
-async function getAllCabins(req, res, next) {
-    const cabins = await Cabin.find();
+  res.status(200).json({
+    status: "success",
+    total: cabins.length,
+    data: {
+      cabins,
+    },
+  });
+});
 
-    res.status(400).json({
-        status: 'success',
-        total: cabins.length,
-        data: {
-            cabins
-        }
-    })
-}
+const getCabin = catchAsync(async (req, res, next) => {
+  const { cabinId } = req.params;
+  const cabin = await Cabin.findById(cabinId);
 
-async function getCabin(req, res, next) {
-    const {cabinId} = req.params;
-    const cabin = await Cabin.findById(cabinId);
+  res.status(200).json({
+    status: "success",
+    data: {
+      cabin,
+    },
+  });
+});
+const createCabin = catchAsync(async (req, res, next) => {
+  const cabin = await Cabin.create(req.body);
 
-    if(!cabin) {
-        return res.status(404).json({
-            status: 'Fail',
-            error: `No Cabin found with ${cabinId}`
-        })
-    }
+  res.status(200).json({
+    status: "success",
 
-    res.status(400).json({
-        status: 'success',
-        data: {
-            cabin
-        }
-    })
-}
-async function createCabin(req, res, next) {
-    const cabin = await Cabin.create(req.body);
-   
+    data: {
+      cabin,
+    },
+  });
+});
 
-    res.status(400).json({
-        status: 'success',
-        
-        data: {
-            cabin
-        }
-    })
+const updateCabin = catchAsync(async (req, res, next) => {
+  const cabin = await Cabin.findByIdAndUpdate(req.params.cabinId, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-}
+  res.status(200).json({
+    status: "success",
+    data: {
+      cabin,
+    },
+  });
+});
 
+const deleteCabin = catchAsync(async (req, res, next) => {
+  const { cabinId } = req.params;
+  await Cabin.findByIdAndDelete(cabinId);
 
+  res.status(204).json({
+    status: "success",
+  });
+});
 
 module.exports = {
-    createCabin,
-    getAllCabins,
-    getCabin
-} 
+  createCabin,
+  getAllCabins,
+  getCabin,
+  updateCabin,
+  deleteCabin,
+};
