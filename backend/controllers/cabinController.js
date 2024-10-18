@@ -1,5 +1,6 @@
 const Cabin = require("../models/cabinModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const getAllCabins = catchAsync(async (req, res, next) => {
   const cabins = await Cabin.find();
@@ -16,6 +17,10 @@ const getAllCabins = catchAsync(async (req, res, next) => {
 const getCabin = catchAsync(async (req, res, next) => {
   const { cabinId } = req.params;
   const cabin = await Cabin.findById(cabinId);
+
+  if (!cabin) {
+    return next(new AppError(`No tour found with this ${cabinId} Id`, 404));
+  }
 
   res.status(200).json({
     status: "success",
@@ -42,6 +47,12 @@ const updateCabin = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
+  if (!cabin) {
+    return next(
+      new AppError(`No tour found with this ${req.params.cabinId} Id`, 404)
+    );
+  }
+
   res.status(200).json({
     status: "success",
     data: {
@@ -52,7 +63,11 @@ const updateCabin = catchAsync(async (req, res, next) => {
 
 const deleteCabin = catchAsync(async (req, res, next) => {
   const { cabinId } = req.params;
-  await Cabin.findByIdAndDelete(cabinId);
+  const cabin = await Cabin.findByIdAndDelete(cabinId);
+
+  if (!cabin) {
+    return next(new AppError(`No tour found with this ${cabinId} Id`, 404));
+  }
 
   res.status(204).json({
     status: "success",
