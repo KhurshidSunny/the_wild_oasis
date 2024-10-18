@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js"
+    "start": "node server.js",
+    "start:dev": "nodemon server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,7 @@
     "nodemon": "^3.1.7"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "mongoose": "^8.7.0"
