@@ -1,10 +1,16 @@
 const Cabin = require("../models/cabinModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const APIFeatures = require("../utils/apiFeatures");
 
 const getAllCabins = catchAsync(async (req, res, next) => {
-  const cabins = await Cabin.find();
+  const features = new APIFeatures(Cabin.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
+  const cabins = await features.query;
   res.status(200).json({
     status: "success",
     total: cabins.length,

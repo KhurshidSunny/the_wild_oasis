@@ -2,14 +2,17 @@
 import supabase, { supabaseUrl } from "./supabase";
 
 export async function getCabins() {
-  const { data, error } = await supabase.from("cabins").select("*");
-
-  if (error) {
-    console.error(error);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log(apiUrl);
+  try {
+    const res = await fetch(`${apiUrl}/cabins`);
+    console.log(res);
+    const data = await res.json();
+    // console.log(data.data.cabins);
+    return data.data.cabins;
+  } catch (err) {
     throw new Error("The cabins could not be loaded");
   }
-
-  return data;
 }
 
 export async function createEditCabin(newCabin, id) {

@@ -79,10 +79,11 @@ function CabinRow({ cabin }) {
       image,
     });
   }
+  const imageUrl = `${import.meta.env.VITE_API_URL}/images/cabins/${image}`;
 
   return (
     <Table.Row>
-      <Img src={image} />
+      <Img src={imageUrl} />
       <Cabin>{name}</Cabin>
       <div>fits up to {maxCapacity} guests</div>
       <Price>{formatCurrency(regularPrice)}</Price>
