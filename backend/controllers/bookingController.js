@@ -22,7 +22,6 @@ const createBooking = async (req, res) => {
 const getBookings = async (req, res) => {
     try{
         const bookings = await Booking.find();
-        console.log(bookings) // just for testing github actions
 
         res.status(200).json({
             status: 'success',
