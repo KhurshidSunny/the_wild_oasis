@@ -1,0 +1,30 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches:
+      - main  # Change this to your branch if not 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/github-actions
+          chmod 600 ~/.ssh/github-actions
+          ssh-keyscan -H ec2-your-public-ip >> ~/.ssh/known_hosts
+
+      - name: Deploy code to EC2
+        run: |
+          ssh -i ~/.ssh/github-actions ubuntu@ec2-your-public-ip '
+            cd ~/the_wild_oasis/backend &&
+            git pull origin main &&
+            npm install &&
+            pm2 restart all || pm2 start server.js --name wild-oasis-backend
+          '
