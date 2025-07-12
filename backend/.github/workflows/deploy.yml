@@ -1,30 +1,31 @@
-name: Deploy Backend to EC2
+name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main  # Change this to your branch if not 'main'
+      - main  # or 'master' if that's your default branch
 
 jobs:
   deploy:
+    name: Deploy Node.js backend to EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup SSH
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/github-actions
-          chmod 600 ~/.ssh/github-actions
-          ssh-keyscan -H ec2-your-public-ip >> ~/.ssh/known_hosts
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy code to EC2
         run: |
-          ssh -i ~/.ssh/github-actions ubuntu@ec2-your-public-ip '
-            cd ~/the_wild_oasis/backend &&
-            git pull origin main &&
-            npm install &&
-            pm2 restart all || pm2 start server.js --name wild-oasis-backend
-          '
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.EC2_PORT }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ~/the_wild_oasis/backend
+            git pull origin main
+            npm install
+            pm2 restart server || pm2 start server.js --name server
+          EOF
