@@ -1,83 +1,123 @@
-const Guest = require("../models/guestModel");
-const AppError = require("../utils/appError");
-const catchAsync = require("../utils/catchAsync");
+const Guest = require('../models/guests')
 
-const getAllGuests = catchAsync(async (req, res, next) => {
-  const guests = await Guest.find();
+const createGuest = async (req, res) => {
+    try{
+        const newGuest = await Guest.create(req.body)
 
-  res.status(200).json({
-    status: "success",
-    total: guests.length,
-    data: {
-      guests,
-    },
-  });
-});
+        res.status(201).json({
+            status: 'success',
+            data: newGuest
+        })
 
-const getGuest = catchAsync(async (req, res, next) => {
-  const { guestId } = req.params;
-  const guest = await Guest.findById(guestId);
+    }catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message
+        })
 
-  if (!guest) {
-    return next(new AppError(`There is no Guest with this ${guestId} Id`, 404));
-  }
+    }
+}
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      guest,
-    },
-  });
-});
+// get all cabins
+const getGuests = async (req, res) => {
+    try{
+        const guests = await Guest.find();
 
-const createGuest = catchAsync(async (req, res, next) => {
-  const guest = await Guest.create(req.body);
+        res.status(200).json({
+            status: 'success',
+            total: guests.length,
+            data: guests
+        })
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      guest,
-    },
-  });
-});
+    }catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
 
-const updateGuest = catchAsync(async (req, res, next) => {
-  const { guestId } = req.params;
-  const guest = await Guest.findByIdAndUpdate(guestId, req.body, {
-    new: true,
-    runValidators: true,
-  });
+        })
+    }
+}
 
-  if (!guest) {
-    return next(new AppError(`There is no Guest with this ${guestId} Id`, 404));
-  }
+const getGuest = async (req, res) => {
+    try{
+        const {guest_id} = req.params;
+        const guest = await Guest.findById(guest_id);
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      guest,
-    },
-  });
-});
+        if(!guest) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'guest not found'
+            })
+        }
 
-const deleteGuest = catchAsync(async (req, res, next) => {
-  const { guestId } = req.params;
-  const guest = await Guest.findByIdAndDelete(guestId);
+        res.status(200).json({
+            status: 'success',
+            data: guest
+        })
 
-  if (!guest) {
-    return next(new AppError(`There is no Guest with this ${guestId} Id`, 404));
-  }
+    }catch(err) {
+        res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+}
 
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
 
-module.exports = {
-  createGuest,
-  getAllGuests,
-  getGuest,
-  updateGuest,
-  deleteGuest,
-};
+const updateGuest = async (req, res) => {
+        try{
+            const {guest_id} = req.params;
+            const updatedGuest = await Guest.findByIdAndUpdate(guest_id, req.body, {
+                new: true,
+                runValidators: true
+            })
+
+            if(!updatedGuest){
+                return res.status(404).json({
+                    status: 'fail',
+                    message: 'Cabin not found'
+                })
+            }
+
+            res.status(200).json({
+                status: 'success',
+                data: updatedGuest
+            })
+
+        }catch(err) {
+            res.status(400).json({
+                status: 'fail',
+                message: err.message
+            })
+
+        }
+}
+
+const deleteGuest = async (req, res) => {
+    try{
+        const {guest_id} = req.params;
+        const guest = await Guest.findByIdAndDelete(guest_id);
+
+        if(!guest) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Cabin not found'
+            })
+        }
+
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        })
+    }catch(err) {
+        res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+
+}
+
+
+
+module.exports = {createGuest, getGuests, getGuest, updateGuest, deleteGuest}

@@ -1,36 +1,123 @@
-const Booking = require("../models/bookingModel");
-const APIFeatures = require("../utils/apiFeatures");
-const catchAsync = require("../utils/catchAsync");
+const Booking = require('../models/bookings')
 
-const getAllBookings = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Booking.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const bookings = await features.query;
+const createBooking = async (req, res) => {
+    try{
+        const newBooking = await Booking.create(req.body)
 
-  res.status(200).json({
-    status: "success",
-    total: bookings.length,
-    data: {
-      bookings,
-    },
-  });
-});
+        res.status(201).json({
+            status: 'success',
+            data: newBooking
+        })
 
-const createBooking = catchAsync(async (req, res, next) => {
-  const booking = await Booking.create(req.body);
+    }catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message
+        })
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      booking,
-    },
-  });
-});
+    }
+}
 
-module.exports = {
-  getAllBookings,
-  createBooking,
-};
+// get all cabins
+const getBookings = async (req, res) => {
+    try{
+        const bookings = await Booking.find();
+
+        res.status(200).json({
+            status: 'success',
+            total: bookings.length,
+            data: bookings
+        })
+
+    }catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+
+        })
+    }
+}
+
+const getBooking = async (req, res) => {
+    try{
+        const {booking_id} = req.params;
+        const booking = await Booking.findById(booking_id);
+
+        if(!booking) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Booking not found'
+            })
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: booking
+        })
+
+    }catch(err) {
+        res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+}
+
+
+const updateBooking = async (req, res) => {
+        try{
+            const {booking_id} = req.params;
+            const updatedBooking = await Booking.findByIdAndUpdate(booking_id, req.body, {
+                new: true,
+                runValidators: true
+            })
+
+            if(!updatedBooking){
+                return res.status(404).json({
+                    status: 'fail',
+                    message: 'Booking not found'
+                })
+            }
+
+            res.status(200).json({
+                status: 'success',
+                data: updatedBooking
+            })
+
+        }catch(err) {
+            res.status(400).json({
+                status: 'fail',
+                message: err.message
+            })
+
+        }
+}
+
+const deleteBooking = async (req, res) => {
+    try{
+        const {booking_id} = req.params;
+        const booking = await Booking.findByIdAndDelete(booking_id);
+
+        if(!booking) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Booking not found'
+            })
+        }
+
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        })
+    }catch(err) {
+        res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+
+}
+
+
+
+module.exports = {createBooking, getBookings, getBooking, updateBooking, deleteBooking}
