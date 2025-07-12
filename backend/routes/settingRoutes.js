@@ -1,12 +1,9 @@
-const express = require("express");
-const settingController = require("../controllers/settingController");
+const express = require('express')
+const settingController = require('../controllers/settingController')
 
-const router = express.Router();
+const router = express.Router()
 
-router
-  .route("/")
-  .get(settingController.getAllSettings)
-  .post(settingController.createSetting);
-router.route("/:settingId").patch(settingController.updateSetting);
+router.post('/', settingController.createSetting)
+router.patch('/:id', settingController.updateSetting)
 
 module.exports = router;

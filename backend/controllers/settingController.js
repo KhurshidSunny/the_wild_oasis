@@ -1,50 +1,50 @@
-const Setting = require("../models/settingModel");
-const catchAsync = require("../utils/catchAsync");
+const Setting = require('../models/settings')
 
-const getAllSettings = catchAsync(async (req, res, next) => {
-  const settings = await Setting.find();
+const createSetting = async (req, res) => {
+    try{
+        const setting = await Setting.create(req.body)
 
-  res.status(200).json({
-    status: "success",
-    total: settings.length,
-    data: {
-      settings,
-    },
-  });
-});
+        res.status(201).json({
+            status: 'success',
+            data: setting
+        })
 
-const createSetting = catchAsync(async (req, res, next) => {
-  const settings = await Setting.create(req.body);
+    }catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message
+        })
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      settings,
-    },
-  });
-});
-
-const updateSetting = catchAsync(async (req, res, next) => {
-  const settings = await Setting.findByIdAndUpdate(
-    req.params.settingId,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
     }
-  );
+}
 
-  res.status(200).json({
-    status: "success",
-    total: settings.length,
-    data: {
-      settings,
-    },
-  });
-});
+const updateSetting = async (req, res) => {
+        try{
+            const {id} = req.params;
+            const setting = await Setting.findByIdAndUpdate(id, req.body, {
+                new: true,
+                runValidators: true
+            })
 
-module.exports = {
-  getAllSettings,
-  createSetting,
-  updateSetting,
-};
+            if(!setting){
+                return res.status(404).json({
+                    status: 'fail',
+                    message: 'setting could not found'
+                })
+            }
+
+            res.status(200).json({
+                status: 'success',
+                data: setting
+            })
+
+        }catch(err) {
+            res.status(400).json({
+                status: 'fail',
+                message: err.message
+            })
+
+        }
+}
+
+module.exports = {createSetting, updateSetting}

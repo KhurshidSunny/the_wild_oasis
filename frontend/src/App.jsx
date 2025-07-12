@@ -14,7 +14,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
 import Booking from "./pages/Booking";
 import Checkin from "./pages/Checkin";
-import ProtectedRoute from "./ui/ProtectedRoute";
+// import ProtectedRoute from "./ui/ProtectedRoute";
 import { DarkModeProvider } from "./contexts/DarkModeContext";
 
 const queryClient = new QueryClient({
@@ -36,9 +36,9 @@ function App() {
           <Routes>
             <Route
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <AppLayout />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             >
               <Route index element={<Navigate replace to="dashboard" />} />
