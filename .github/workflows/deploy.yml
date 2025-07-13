@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # or change to 'master' if that's your default branch
+      - main  # or 'master' if that's your default branch
 
 jobs:
   deploy:
@@ -27,5 +27,5 @@ jobs:
             cd ~/the_wild_oasis/backend
             git pull origin main
             npm install
-            pm2 restart wild-oasis || pm2 start server.js --name wild-oasis
+            pm2 restart wild-oasis || pm2 start npm --name wild-oasis -- start:prod
           EOF
