@@ -1,26 +1,18 @@
 const Guest = require('../models/guests')
+const AppError = require('../utils/appError')
+const catchAsync = require('../utils/catchAsync')
 
-const createGuest = async (req, res) => {
-    try{
+const createGuest = catchAsync(async (req, res) => {
         const newGuest = await Guest.create(req.body)
 
         res.status(201).json({
             status: 'success',
             data: newGuest
         })
-
-    }catch(err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err.message
-        })
-
-    }
-}
+})
 
 // get all cabins
-const getGuests = async (req, res) => {
-    try{
+const getGuests = catchAsync(async (req, res) => {
         const guests = await Guest.find();
 
         res.status(200).json({
@@ -28,95 +20,53 @@ const getGuests = async (req, res) => {
             total: guests.length,
             data: guests
         })
+})
 
-    }catch(err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err.message,
-
-        })
-    }
-}
-
-const getGuest = async (req, res) => {
-    try{
+const getGuest = catchAsync(async (req, res) => {
         const {guest_id} = req.params;
         const guest = await Guest.findById(guest_id);
 
-        if(!guest) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'guest not found'
-            })
-        }
+         if(!guest){
+                return next(new AppError('Guest not found', 404))
+            }
 
         res.status(200).json({
             status: 'success',
             data: guest
         })
-
-    }catch(err) {
-        res.status(500).json({
-            status: 'fail',
-            message: err.message
-        })
-    }
-}
+})
 
 
-const updateGuest = async (req, res) => {
-        try{
+const updateGuest =catchAsync(async (req, res) => {
             const {guest_id} = req.params;
             const updatedGuest = await Guest.findByIdAndUpdate(guest_id, req.body, {
                 new: true,
                 runValidators: true
             })
 
-            if(!updatedGuest){
-                return res.status(404).json({
-                    status: 'fail',
-                    message: 'Cabin not found'
-                })
+            if(!updateGuest){
+                return next(new AppError('Guest not found', 404))
             }
 
             res.status(200).json({
                 status: 'success',
                 data: updatedGuest
             })
+})
 
-        }catch(err) {
-            res.status(400).json({
-                status: 'fail',
-                message: err.message
-            })
-
-        }
-}
-
-const deleteGuest = async (req, res) => {
-    try{
+const deleteGuest =catchAsync(async (req, res) => {
         const {guest_id} = req.params;
         const guest = await Guest.findByIdAndDelete(guest_id);
 
-        if(!guest) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'Cabin not found'
-            })
-        }
+        if(!guest){
+                return next(new AppError('Guest not found', 404))
+            }
 
         res.status(204).json({
             status: 'success',
             data: null,
         })
-    }catch(err) {
-        res.status(500).json({
-            status: 'fail',
-            message: err.message
-        })
-    }
-
-}
+})
 
 
 

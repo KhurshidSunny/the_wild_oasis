@@ -1,25 +1,17 @@
 const Setting = require('../models/settings')
+const catchAsync = require('../utils/catchAsync')
+const AppError = require('../utils/appError')
 
-const createSetting = async (req, res) => {
-    try{
+const createSetting = catchAsync(async (req, res) => {
         const setting = await Setting.create(req.body)
 
         res.status(201).json({
             status: 'success',
             data: setting
         })
+})
 
-    }catch(err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err.message
-        })
-
-    }
-}
-
-const updateSetting = async (req, res) => {
-        try{
+const updateSetting = catchAsync(async (req, res, next) => {
             const {id} = req.params;
             const setting = await Setting.findByIdAndUpdate(id, req.body, {
                 new: true,
@@ -27,24 +19,13 @@ const updateSetting = async (req, res) => {
             })
 
             if(!setting){
-                return res.status(404).json({
-                    status: 'fail',
-                    message: 'setting could not found'
-                })
+                return next(new AppError('Setting not found', 404))
             }
 
             res.status(200).json({
                 status: 'success',
                 data: setting
             })
-
-        }catch(err) {
-            res.status(400).json({
-                status: 'fail',
-                message: err.message
-            })
-
-        }
-}
+})
 
 module.exports = {createSetting, updateSetting}
