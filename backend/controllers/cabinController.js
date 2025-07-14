@@ -17,7 +17,6 @@ const createCabin = catchAsync(async (req, res) => {
 const getCabins = catchAsync(async (req, res) => {
  
         const cabins = await Cabin.find();
-        console.log(cabins)
 
         res.status(200).json({
             status: 'success',
@@ -26,14 +25,14 @@ const getCabins = catchAsync(async (req, res) => {
         })
 })
 
-const getCabin = catchAsync(async (req, res) => {
+const getCabin = catchAsync(async (req, res, next) => {
  
-        console.log(req.params)
         const {cabin_id} = req.params;
         const cabin = await Cabin.findById(cabin_id);
 
          if(!cabin){
                 return next(new AppError('Cabin not found', 404))
+                
             }
 
         res.status(200).json({
@@ -43,7 +42,7 @@ const getCabin = catchAsync(async (req, res) => {
 })
 
 
-const updateCabin = catchAsync(async (req, res) => {
+const updateCabin = catchAsync(async (req, res, next) => {
        
             const {cabin_id} = req.params;
             const updatedCabin = await Cabin.findByIdAndUpdate(cabin_id, req.body, {
@@ -61,7 +60,7 @@ const updateCabin = catchAsync(async (req, res) => {
             })
 })
 
-const deleteCabin = catchAsync(async (req, res) => {
+const deleteCabin = catchAsync(async (req, res, next) => {
   
         const {cabin_id} = req.params;
         const cabin = await Cabin.findByIdAndDelete(cabin_id);

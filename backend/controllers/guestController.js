@@ -22,7 +22,7 @@ const getGuests = catchAsync(async (req, res) => {
         })
 })
 
-const getGuest = catchAsync(async (req, res) => {
+const getGuest = catchAsync(async (req, res, next) => {
         const {guest_id} = req.params;
         const guest = await Guest.findById(guest_id);
 
@@ -37,7 +37,7 @@ const getGuest = catchAsync(async (req, res) => {
 })
 
 
-const updateGuest =catchAsync(async (req, res) => {
+const updateGuest =catchAsync(async (req, res, next) => {
             const {guest_id} = req.params;
             const updatedGuest = await Guest.findByIdAndUpdate(guest_id, req.body, {
                 new: true,
@@ -54,7 +54,7 @@ const updateGuest =catchAsync(async (req, res) => {
             })
 })
 
-const deleteGuest =catchAsync(async (req, res) => {
+const deleteGuest =catchAsync(async (req, res, next) => {
         const {guest_id} = req.params;
         const guest = await Guest.findByIdAndDelete(guest_id);
 

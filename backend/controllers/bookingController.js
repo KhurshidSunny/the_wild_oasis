@@ -24,7 +24,7 @@ const getBookings = catchAsync(async (req, res) => {
         })
 })
 
-const getBooking = catchAsync(async (req, res) => {
+const getBooking = catchAsync(async (req, res, next) => {
 
         const {booking_id} = req.params;
         const booking = await Booking.findById(booking_id);
@@ -40,7 +40,7 @@ const getBooking = catchAsync(async (req, res) => {
 })
 
 
-const updateBooking = catchAsync(async (req, res) => {
+const updateBooking = catchAsync(async (req, res, next) => {
 
             const {booking_id} = req.params;
             const updatedBooking = await Booking.findByIdAndUpdate(booking_id, req.body, {
@@ -58,7 +58,7 @@ const updateBooking = catchAsync(async (req, res) => {
             })
 })
 
-const deleteBooking = catchAsync(async (req, res) => {
+const deleteBooking = catchAsync(async (req, res, next) => {
         const {booking_id} = req.params;
         const booking = await Booking.findByIdAndDelete(booking_id);
 
