@@ -4,8 +4,12 @@ const catchAsync = require('../utils/catchAsync')
 
 
 const createCabin = catchAsync(async (req, res) => {
-   
-        const newCabin = await Cabin.create(req.body)
+        const imageUrl = req.file?.location;
+        const newCabin = await Cabin.create({
+            ...req.body,
+            image: imageUrl
+
+        })
 
         res.status(201).json({
             status: 'success',
@@ -43,9 +47,9 @@ const getCabin = catchAsync(async (req, res, next) => {
 
 
 const updateCabin = catchAsync(async (req, res, next) => {
-       
+            const imageUrl = req.file?.location;
             const {cabin_id} = req.params;
-            const updatedCabin = await Cabin.findByIdAndUpdate(cabin_id, req.body, {
+            const updatedCabin = await Cabin.findByIdAndUpdate(cabin_id, {...req.body, image: imageUrl}, {
                 new: true,
                 runValidators: true
             })

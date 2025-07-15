@@ -2,8 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
-const mongoSanitize = require('express-mongo-sanitize')
-const xss = require('xss-clean')
+
 const cabinRouter = require('./routes/cabinRoutes')
 const settingRouter = require('./routes/settingRoutes')
 const guestRouter = require('./routes/guestRoutes')
@@ -23,11 +22,6 @@ app.use(helmet())
 // body parser for json
 app.use(express.json( {limit: '20kb'}))
 
-// Data Sanitiztion against NoSQL query injection
-app.use(mongoSanitize())
-
-// Data Sanitize XSS (cross Sit scripting)
-app.use(xss())
 
 app.use(morgan('dev'))
 

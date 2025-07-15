@@ -4,20 +4,24 @@ const catchAsync = require('../utils/catchAsync')
 const jwt = require('jsonwebtoken')
 const {promisify} = require('util')
 
+
 const signToken = (id) => {
      const token = jwt.sign({id}, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES_IN
     })
     return token;
-
 }
+
+
+
 
 exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
+        passwordConfirm: req.body.passwordConfirm,
+        image: req.file?.location
     });
 
     // jwt token
@@ -111,8 +115,8 @@ exports.protect = catchAsync(async(req, res, next) => {
 
 exports.passwordUpdate = catchAsync(async(req, res, next) => {
     // 1) Get the user from the Collection
-    const {email, currentPassword, newPassword} = req.body;
-    const user = await User.findOne({email}).select("+password")
+    const {currentPassword, newPassword} = req.body;
+    const user = await User.findById(req.user.id).select("+password")
 
 
     // 2) Check if POSTed current password is correct
@@ -135,3 +139,45 @@ exports.passwordUpdate = catchAsync(async(req, res, next) => {
     })
     
 })
+
+
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+    const users = await User.find();
+    console.log(users)
+
+    res.status(200).json({
+        status: 'success',
+        total: users.length,
+        data: {
+            users
+        }
+
+    })
+})
+
+
+
+
+exports.getUser = catchAsync( async (req, res, next) => {
+    const {id} = req.params;
+
+    const user = await User.findById(id);
+
+    if(!user) {
+        return next(new AppError('You are not logged in. Please login to get the details'))
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    })
+
+})
+
+exports.getMe = (req, res,next) => {
+    req.params.id = req.user.id;
+    next();
+}
+
