@@ -2,6 +2,67 @@ const Booking = require('../models/bookings')
 const AppError = require('../utils/appError')
 const catchAsync = require("../utils/catchAsync")
 
+
+const getBookingsAfterDate = catchAsync(async(req, res, next) => {
+    const {date} = req.query;
+    const bookings = await Booking.find({
+        createdAt: {$gte: new Date(date)}
+    })
+
+    res.status(200).json({
+        status: 'success',
+        results: bookings.length,
+        date: {bookings}
+    })
+    next()
+})
+
+
+
+const getStaysTodayActivity = async (req, res, next) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const bookings = await Booking.find({
+      startDate: { $gte: today, $lt: tomorrow },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      results: bookings.length,
+      data: { stays: bookings },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+// e.g., /api/v1/bookings/getStaysAfterDate?date=2024-07-01
+const getStaysAfterDate = async (req, res, next) => {
+  try {
+    const { date } = req.query;
+
+    const bookings = await Booking.find({
+      startDate: { $gte: new Date(date) },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      results: bookings.length,
+      data: { stays: bookings },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 const createBooking = catchAsync(async (req, res) => {
   
         const newBooking = await Booking.create(req.body)
@@ -74,4 +135,4 @@ const deleteBooking = catchAsync(async (req, res, next) => {
 
 
 
-module.exports = {createBooking, getBookings, getBooking, updateBooking, deleteBooking}
+module.exports = {createBooking, getBookings, getBooking, updateBooking, deleteBooking, getBookingsAfterDate, getStaysTodayActivity, getStaysAfterDate}

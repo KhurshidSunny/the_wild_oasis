@@ -1,90 +1,62 @@
-import supabase, { supabaseUrl } from "./supabase";
+import { axiosInstance } from "../../axios";
 
-export async function signup({ fullName, email, password }) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        fullName,
-        avatar: "",
-      },
-    },
-  });
-  if (error) {
-    throw new Error(error.message);
+// Signup user with image
+export async function signup({ fullName, email, password, avatar }) {
+  try {
+    const formData = new FormData();
+    formData.append("name", fullName);
+    formData.append("email", email);
+    formData.append("password", password);
+    if (avatar) formData.append("image", avatar);
+
+    const { data } = await axiosInstance.post("/users/signup", formData);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Signup failed");
   }
-
-  return data;
 }
 
+// Login user
 export async function login({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const { data } = await axiosInstance.post("/users/login", {
+      email,
+      password,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Login failed");
   }
-
-  return data;
 }
 
+// Logout (just expire the cookie from backend if needed)
 export async function logout() {
-  const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    throw new Error(error.message);
+  try {
+    // You can create /logout route if needed
+    await axiosInstance.post("/users/logout");
+  } catch (error) {
+    throw new Error("Logout failed");
   }
 }
 
+// Get current user
 export async function getCurrentUser() {
-  const { data: session } = await supabase.auth.getSession();
-
-  if (!session.session) return null;
-
-  const { data, error } = await supabase.auth.getUser();
-  // console.log(data);
-
-  if (error) throw new Error(error.message);
-  return data?.user;
+  try {
+    const { data } = await axiosInstance.get("/users/me");
+    return data;
+  } catch (error) {
+    return null;
+  }
 }
 
-export async function updateCurrentUser({ password, fullName, avatar }) {
-  let updateData;
-
-  // 1. Update user password OR fullName
-  if (password) updateData = { password };
-  if (fullName) updateData = { data: { fullName } };
-  const { data, error } = await supabase.auth.updateUser(updateData);
-
-  if (error) {
-    throw new Error(error.message);
+// Update user password
+export async function updateCurrentUser({ password }) {
+  try {
+    const { data } = await axiosInstance.patch("/users/updateMyPassword", {
+      password,
+    });
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Update failed");
   }
-
-  if (!avatar) return data;
-
-  // 2.Upload the avatar image
-
-  // make a unique fileName for the avatar
-  const fileName = `avatar-${data.user.id}-${Math.random()}`;
-
-  const { error: storageError } = await supabase.storage
-    .from("avatars")
-    .upload(fileName, avatar);
-
-  if (storageError) {
-    throw new Error(storageError.message);
-  }
-  // 3.update the avatar in the user
-
-  const { data: updatedUser, error: error2 } = await supabase.auth.updateUser({
-    data: {
-      avatar: `${supabaseUrl}/storage/v1/object/public/avatars/${fileName}`,
-    },
-  });
-
-  if (error2) throw new Error(error2.message);
-  return updatedUser;
 }

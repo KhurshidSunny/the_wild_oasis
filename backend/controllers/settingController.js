@@ -11,6 +11,17 @@ const createSetting = catchAsync(async (req, res) => {
         })
 })
 
+const getSettings = catchAsync(async (req, res) => {
+    const settings = await Setting.find();
+
+
+    res.status(200).json({
+        status: 'success',
+        results: settings.length,
+        data: {settings}
+    })
+})
+
 const updateSetting = catchAsync(async (req, res, next) => {
             const {id} = req.params;
             const setting = await Setting.findByIdAndUpdate(id, req.body, {
@@ -28,4 +39,4 @@ const updateSetting = catchAsync(async (req, res, next) => {
             })
 })
 
-module.exports = {createSetting, updateSetting}
+module.exports = {createSetting, updateSetting, getSettings}

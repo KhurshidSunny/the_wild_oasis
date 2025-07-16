@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
+const cors = require('cors')
 
 const cabinRouter = require('./routes/cabinRoutes')
 const settingRouter = require('./routes/settingRoutes')
@@ -22,8 +23,14 @@ app.use(helmet())
 // body parser for json
 app.use(express.json( {limit: '20kb'}))
 
-
 app.use(morgan('dev'))
+
+app.use(cors(
+    {
+    origin: true,
+    credentials: true
+}
+))
 
 // rate limiter
 const limiter = rateLimit({
