@@ -10,11 +10,16 @@ export async function signup({ fullName, email, password, avatar }) {
     if (avatar) formData.append("image", avatar);
 
     const { data } = await axiosInstance.post("/users/signup", formData);
+
+    // 🔐 Store token in localStorage
+    localStorage.setItem("jwt", data.token);
+
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Signup failed");
   }
 }
+
 
 // Login user
 export async function login({ email, password }) {
@@ -23,22 +28,28 @@ export async function login({ email, password }) {
       email,
       password,
     });
-    console.log(data)
+
+    // 🔐 Store token in localStorage
+    localStorage.setItem("jwt", data.token);
+
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Login failed");
   }
 }
 
+
 // Logout (just expire the cookie from backend if needed)
 export async function logout() {
   try {
-    // You can create /logout route if needed
+    localStorage.removeItem("jwt"); // 🧹 Clear token from localStorage
+    // Optional: call backend to expire cookie (if cookie strategy is used again)
     await axiosInstance.post("/users/logout");
   } catch (error) {
     throw new Error("Logout failed");
   }
 }
+
 
 // Get current user
 export async function getCurrentUser() {
