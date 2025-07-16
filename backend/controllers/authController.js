@@ -27,14 +27,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     // jwt token
     const token = signToken(newUser._id)
 
-    // send cookie
-    const cookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        maxAge: 20 * 24 * 60 * 60 * 1000, // 20 day
-    }
-    res.cookie('jwt', token, cookieOptions);
     res.password = undefined;
 
     res.status(201).json({
@@ -67,14 +59,6 @@ exports.login = catchAsync(async (req, res, next) => {
     // 3) If everything is OK, send to the token to client
     const token = signToken(user._id);
 
-    // send cookie
-    const cookieOptions = {
-        expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
-        secure: process.env.NODE_ENV === 'production' ? true : false,
-        httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-    }
-    res.cookie('jwt', token, cookieOptions)
 
     res.status(200).json({
         status: "success",
@@ -88,9 +72,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     // 1) Getting token and check if it's there
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
-        token = req.cookies.jwt;
-    }
+    } 
     console.log(token)
 
     if(!token) {
