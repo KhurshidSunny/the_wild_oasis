@@ -82,6 +82,8 @@ exports.protect = catchAsync(async(req, res, next) => {
     // 2) Verification of token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY)
 
+    console.log("Decoded token:", decoded);
+    console.log("User found:", user);
 
     // 3) Check if user still exist
     const user = await User.findById(decoded.id);
@@ -166,7 +168,7 @@ exports.getUser = catchAsync( async (req, res, next) => {
 
 exports.getMe = (req, res,next) => {
     req.params.id = req.user.id;
-    console.log(req.cookies.jwt)
+    console.log(`Me/ id: ${req.params.id}`)
     next();
 }
 
