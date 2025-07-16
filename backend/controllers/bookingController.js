@@ -3,7 +3,7 @@ const AppError = require('../utils/appError')
 const catchAsync = require("../utils/catchAsync")
 
 
-const getBookingsAfterDate = catchAsync(async(req, res, next) => {
+const getBookingsAfterDate = catchAsync(async(req, res) => {
     const {date} = req.query;
     const bookings = await Booking.find({
         createdAt: {$gte: new Date(date)}
@@ -14,7 +14,6 @@ const getBookingsAfterDate = catchAsync(async(req, res, next) => {
         results: bookings.length,
         date: {bookings}
     })
-    next()
 })
 
 

@@ -29,10 +29,10 @@ exports.signup = catchAsync(async (req, res, next) => {
 
     // send cookie
     const cookieOptions = {
-        expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
-        secure: process.env.NODE_ENV === 'production' ? true : false,
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        maxAge: 20 * 24 * 60 * 60 * 1000, // 20 day
     }
     res.cookie('jwt', token, cookieOptions);
     res.password = undefined;
