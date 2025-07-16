@@ -32,6 +32,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
         secure: process.env.NODE_ENV === 'production' ? true : false,
         httpOnly: true,
+        sameSite: 'None',
     }
     res.cookie('jwt', token, cookieOptions);
     res.password = undefined;
@@ -62,6 +63,8 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Incorrect email or password', 401))
     }
 
+
+
     // 3) If everything is OK, send to the token to client
     const token = signToken(user._id);
 
@@ -70,6 +73,7 @@ exports.login = catchAsync(async (req, res, next) => {
         expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
         secure: process.env.NODE_ENV === 'production' ? true : false,
         httpOnly: true,
+        sameSite: 'None',
     }
     res.cookie('jwt', token, cookieOptions)
 

@@ -30,7 +30,7 @@ app.use(morgan('dev'))
 
 app.use(cors(
     {
-    origin: true,
+    origin: 'http://13.233.154.67:8000',
     credentials: true
 }
 ))
