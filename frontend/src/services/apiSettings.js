@@ -5,7 +5,8 @@ import { axiosInstance } from "../../axios";
 export async function getSettings() {
   try{
     const data = await axiosInstance.get('/settings');
-    return data;
+    console.log(data.data.data.settings)
+    return data.data.data.settings[0];
 
   }catch(err) {
     throw new Error('Could not get settings')
@@ -24,6 +25,8 @@ export async function createSetting(newSetting) {
 
 // Update settings
 export async function updateSetting(id, update) {
+  // console.log('id', id)
+  // console.log(`update : ${update}`)
   try {
     const { data } = await axiosInstance.patch(`/settings/${id}`, update);
     return data;

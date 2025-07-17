@@ -1,6 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
-const rateLimit = require('express-rate-limit')
+// const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
@@ -34,14 +34,14 @@ app.use(cors({
 }));
 
 // rate limiter
-const limiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 100 requests in 60 minutes
-    max: 100,
-    message: "Too many requests from this IP, Please try again in an hour"
-})
+// const limiter = rateLimit({
+//     windowMs: 60 * 60 * 1000, // 100 requests in 60 minutes
+//     max: 100,
+//     message: "Too many requests from this IP, Please try again in an hour"
+// })
 
 // applying rate limit to all the routes
-app.use(limiter)
+// app.use(limiter)
 
 // ROUTES
 app.use('/api/v1/cabins', cabinRouter)

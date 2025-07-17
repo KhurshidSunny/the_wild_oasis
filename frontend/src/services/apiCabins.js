@@ -4,7 +4,8 @@ import { axiosInstance } from "../../axios";
 export async function getCabins() {
   try {
     const { data } = await axiosInstance.get("/cabins");
-    return data.data.cabins;
+    // console.log(data.data)
+    return data.data;
   } catch (err) {
     throw new Error("The cabins could not be loaded");
   }

@@ -7,7 +7,7 @@ export async function getBookingsAfterDate(date) {
     const res = await axiosInstance.get(`/bookings/getBookingsAfterDate`, {
       params: { date },
     });
-    return res.data.data.bookings;
+    return res.data.date.bookings;
   } catch (err) {
     throw new Error("Could not fetch bookings after date");
   }
@@ -28,6 +28,7 @@ export async function getStaysAfterDate(date) {
 export async function getStaysTodayActivity() {
   try {
     const res = await axiosInstance.get('/bookings/getStaysTodayActivity');
+    // console.log(res.data.data.stays)
     return res.data.data.stays;
   } catch (err) {
     throw new Error('Could not fetch today’s stay activity');
@@ -39,7 +40,8 @@ export async function getStaysTodayActivity() {
 export async function getBookings() {
   try {
     const { data } = await axiosInstance.get("/bookings");
-    return data.data.bookings;
+    console.log(data.data)
+    return data.data;
   } catch (err) {
     throw new Error("Bookings could not be loaded");
   }
