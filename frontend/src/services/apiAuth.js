@@ -31,6 +31,7 @@ export async function login({ email, password }) {
 
     // 🔐 Store token in localStorage
     localStorage.setItem("jwt", data.token);
+    console.log(data)
 
     return data;
   } catch (error) {

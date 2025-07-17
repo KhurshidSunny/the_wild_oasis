@@ -18,6 +18,7 @@ export const bookings = [
     observations:
       'I have a gluten allergy and would like to request a gluten-free breakfast.',
     isPaid: false,
+    status: "checked-in",
     numGuests: 1,
   },
   {
@@ -40,6 +41,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: false,
+    status: "checked-in",
     numGuests: 2,
   },
 
@@ -53,6 +55,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: true,
+    status: "checked-in",
     numGuests: 2,
   },
   {
@@ -64,6 +67,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "checked-in",
     numGuests: 2,
   },
   {
@@ -75,6 +79,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: false,
+    status: "checked-out",
     numGuests: 2,
   },
 
@@ -99,6 +104,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: 'We will be bringing our small dog with us',
     isPaid: true,
+    status: "checked-out",
     numGuests: 3,
   },
   {
@@ -123,6 +129,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "checked-out",
     numGuests: 4,
   },
   {
@@ -134,6 +141,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: false,
+    status: "checked-out",
     numGuests: 4,
   },
   {
@@ -145,6 +153,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: true,
+    status: "checked-out",
     numGuests: 1,
   },
 
@@ -169,6 +178,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 4,
   },
   {
@@ -180,6 +190,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 6,
   },
 
@@ -194,6 +205,7 @@ export const bookings = [
     observations:
       "We will be checking in late, around midnight. Hope that's okay :)",
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 6,
   },
   {
@@ -216,6 +228,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 6,
   },
 
@@ -229,6 +242,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: false,
+    status: "unconfirmed",
     numGuests: 8,
   },
   {
@@ -240,6 +254,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 7,
   },
   {
@@ -251,6 +266,7 @@ export const bookings = [
     hasBreakfast: true,
     observations: '',
     isPaid: true,
+    status: "checked-out",
     numGuests: 6,
   },
 
@@ -265,6 +281,7 @@ export const bookings = [
     observations:
       'My wife has a gluten allergy so I would like to request a gluten-free breakfast if possible',
     isPaid: true,
+    status: "checked-in",
     numGuests: 9,
   },
   {
@@ -277,6 +294,7 @@ export const bookings = [
     observations:
       'I am celebrating my anniversary, can you arrange for any special amenities or decorations?',
     isPaid: true,
+    status: "unconfirmed",
     numGuests: 10,
   },
   {
@@ -288,6 +306,7 @@ export const bookings = [
     hasBreakfast: false,
     observations: '',
     isPaid: true,
+    status: "checked-in",
     numGuests: 7,
   },
 ];

@@ -3,6 +3,10 @@ const AppError = require('../utils/appError')
 const catchAsync = require("../utils/catchAsync")
 
 
+
+// Default page size
+const PAGE_SIZE = 10;
+
 const getBookingsAfterDate = catchAsync(async(req, res) => {
     const {date} = req.query;
     const bookings = await Booking.find({
@@ -73,16 +77,41 @@ const createBooking = catchAsync(async (req, res) => {
 })
 
 // get all cabins
+
 const getBookings = catchAsync(async (req, res) => {
+  const { status, sortBy = 'startDate-desc', page = 1 } = req.query;
 
-        const bookings = await Booking.find();
+  // 1. FILTER
+  const filterObj = {};
+  if (status && status !== 'all') {
+    filterObj.status = status;
+  }
 
-        res.status(200).json({
-            status: 'success',
-            total: bookings.length,
-            data: bookings
-        })
-})
+  // 2. SORT
+  const [sortField, sortDirection] = sortBy.split('-');
+  const sortObj = { [sortField]: sortDirection === 'desc' ? -1 : 1 };
+
+
+  // 3. PAGINATION
+  const skip = (page - 1) * PAGE_SIZE;
+  const limit = PAGE_SIZE;
+
+  
+
+  // 4. Query the DB
+  const bookings = await Booking.find(filterObj).sort(sortObj).skip(skip).limit(limit)
+  // const bookings = await Booking.find();
+
+  const total = await Booking.countDocuments(filterObj);
+
+  res.status(200).json({
+    status: 'success',
+    results: bookings.length,
+    count: total,
+    data: bookings,
+  });
+});
+
 
 const getBooking = catchAsync(async (req, res, next) => {
 
