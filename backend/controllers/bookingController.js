@@ -76,41 +76,40 @@ const createBooking = catchAsync(async (req, res) => {
         })
 })
 
-// get all cabins
 
-const getBookings = catchAsync(async (req, res) => {
-  const { status, sortBy = 'startDate-desc', page = 1 } = req.query;
+const getBookings = catchAsync(async (req, res, next) => {
+  const { status, sortBy = "startDate", page = 1 } = req.query;
 
-  // 1. FILTER
-  const filterObj = {};
-  if (status && status !== 'all') {
-    filterObj.status = status;
+  const filter = {};
+  if (status) filter.status = status;
+
+  const sort = {};
+  if (sortBy === "startDate" || sortBy === "endDate") {
+    sort[sortBy] = -1;
   }
 
-  // 2. SORT
-  const [sortField, sortDirection] = sortBy.split('-');
-  const sortObj = { [sortField]: sortDirection === 'desc' ? -1 : 1 };
-
-
-  // 3. PAGINATION
   const skip = (page - 1) * PAGE_SIZE;
-  const limit = PAGE_SIZE;
 
-  
+  console.log(`filter: ${filter}`)
+  console.log(`sort: ${sort}`)
+  console.log(`skip: ${skip}`)
 
-  // 4. Query the DB
-  const bookings = await Booking.find(filterObj).sort(sortObj).skip(skip).limit(limit)
-  // const bookings = await Booking.find();
+  const bookings = await Booking.find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(PAGE_SIZE);
 
-  const total = await Booking.countDocuments(filterObj);
+  const total = await Booking.countDocuments(filter);
 
   res.status(200).json({
-    status: 'success',
+    status: "success",
+    total,
     results: bookings.length,
-    count: total,
     data: bookings,
   });
 });
+
+
 
 
 const getBooking = catchAsync(async (req, res, next) => {

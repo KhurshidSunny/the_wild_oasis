@@ -7,17 +7,23 @@ import Input from "../../ui/Input";
 import { useSignup } from "./useSignup";
 import Spinner from "../../ui/Spinner";
 
-// Email regex: /\S+@\S+\.\S+/
-
 function SignupForm() {
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
   const { isLoading, signup } = useSignup();
 
-  function onSubmit({ fullName, email, password }) {
+  function onSubmit(data) {
+    const { fullName, email, password, passwordConfirm, image } = data;
+
     signup(
-      { fullName, email, password },
+      {
+        fullName,
+        email,
+        password,
+        passwordConfirm,
+        image: image?.[0], // file input returns array
+      },
       {
         onSettled: () => reset(),
       }
@@ -25,8 +31,10 @@ function SignupForm() {
   }
 
   if (isLoading) return <Spinner />;
+
   return (
-    <Form onClick={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+
       <FormRow label="Full name" error={errors?.fullName?.message}>
         <Input
           type="text"
@@ -45,7 +53,7 @@ function SignupForm() {
             required: "This field is required",
             pattern: {
               value: /\S+@\S+\.\S+/,
-              message: "please provide a valid email address",
+              message: "Please provide a valid email address",
             },
           })}
         />
@@ -63,13 +71,16 @@ function SignupForm() {
             required: "This field is required",
             minLength: {
               value: 8,
-              message: "password needs a 8 characters",
+              message: "Password must be at least 8 characters",
             },
           })}
         />
       </FormRow>
 
-      <FormRow label="Repeat password" error={errors?.passwordConfirm?.message}>
+      <FormRow
+        label="Repeat password"
+        error={errors?.passwordConfirm?.message}
+      >
         <Input
           type="password"
           id="passwordConfirm"
@@ -77,17 +88,28 @@ function SignupForm() {
           {...register("passwordConfirm", {
             required: "This field is required",
             validate: (value) =>
-              value === getValues().password || "passwords need to match",
+              value === getValues().password || "Passwords must match",
           })}
         />
       </FormRow>
 
+      <FormRow label="Profile image (optional)">
+        <Input
+          type="file"
+          id="image"
+          accept="image/*"
+          disabled={isLoading}
+          {...register("image")}
+        />
+      </FormRow>
+
       <FormRow>
-        {/* type is an HTML attribute! */}
         <Button variation="secondary" type="reset" disabled={isLoading}>
           Cancel
         </Button>
-        <Button disabled={isLoading}>Create new user</Button>
+        <Button type="submit" disabled={isLoading}>
+          Create new user
+        </Button>
       </FormRow>
     </Form>
   );

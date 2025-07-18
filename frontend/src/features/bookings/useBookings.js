@@ -9,47 +9,46 @@ export function useBookings() {
   const [searchParams] = useSearchParams();
 
   // 1. FILTER
-  const filterValue = searchParams.get("status");
-  const filter =
-    !filterValue || filterValue === "all"
-      ? null
-      : { field: "status", value: filterValue };
-  // { field: "totalPrice", value: 5000, method: "gte" },
+  const status = searchParams.get("status");
+  const filter = status && status !== "all" ? { status } : {};
 
-  //2. SORT
-  const sortByRaw = searchParams.get("sortBy") || "startDate-desc";
-  const [field, direction] = sortByRaw.split("-");
-  const sortBy = { field, direction };
+  // 2. SORT
+  const sortBy = searchParams.get("sortBy") || "startDate";
 
-  // PAGINATION
-  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
+  // 3. PAGINATION
+  let page = Number(searchParams.get("page")) || 1;
 
   // QUERY
   const {
     isLoading,
-    data: { data: bookings, count } = {},
+    data: { data: bookings, total } = {},
     error,
   } = useQuery({
     queryKey: ["bookings", filter, sortBy, page],
     queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
-  // PRE-FETCHING
-  const pageCount = Math.ceil(count / PAGE_SIZE);
+    
 
-  // i. for next button prefetching
+  // console.log("from useBookings", bookings)
+
+  // PRE-FETCHING
+  const pageCount = Math.ceil(total / PAGE_SIZE);
+
+  if (page > pageCount) page = pageCount;
+
   if (page < pageCount)
     queryClient.prefetchQuery({
       queryKey: ["bookings", filter, sortBy, page + 1],
       queryFn: () => getBookings({ filter, sortBy, page: page + 1 }),
     });
 
-  // ii. for previous button prefetching
   if (page > 1)
     queryClient.prefetchQuery({
       queryKey: ["bookings", filter, sortBy, page - 1],
       queryFn: () => getBookings({ filter, sortBy, page: page - 1 }),
     });
 
-  return { isLoading, bookings, error, count };
+
+  return { isLoading, bookings, error, total };
 }

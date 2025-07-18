@@ -1,24 +1,29 @@
 import { axiosInstance } from "../../axios";
 
 // Signup user with image
-export async function signup({ fullName, email, password, avatar }) {
-  try {
-    const formData = new FormData();
-    formData.append("name", fullName);
-    formData.append("email", email);
-    formData.append("password", password);
-    if (avatar) formData.append("image", avatar);
+export async function signup({
+  fullName,
+  email,
+  password,
+  passwordConfirm,
+  image,
+}) {
+  const formData = new FormData();
+  formData.append("name", fullName);
+  formData.append("email", email);
+  formData.append("password", password);
+  formData.append("passwordConfirm", passwordConfirm);
+  if (image) formData.append("image", image);
 
-    const { data } = await axiosInstance.post("/users/signup", formData);
+  const { data } = await axiosInstance.post("/users/signup", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-    // 🔐 Store token in localStorage
-    localStorage.setItem("jwt", data.token);
-
-    return data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || "Signup failed");
-  }
+  return data;
 }
+
 
 
 // Login user

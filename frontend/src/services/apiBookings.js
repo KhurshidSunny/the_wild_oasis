@@ -37,15 +37,23 @@ export async function getStaysTodayActivity() {
 
 
 // Get all bookings
-export async function getBookings() {
+// Get all bookings
+export async function getBookings({ filter, sortBy, page }) {
   try {
-    const { data } = await axiosInstance.get("/bookings");
-    console.log(data.data)
-    return data.data;
+    const params = {
+      ...filter,
+      sortBy,
+      page,
+    };
+
+    const { data } = await axiosInstance.get("/bookings", { params });
+
+    return data;
   } catch (err) {
     throw new Error("Bookings could not be loaded");
   }
 }
+
 
 // Create a booking
 export async function createBooking(newBooking) {
@@ -59,9 +67,10 @@ export async function createBooking(newBooking) {
 
 
 export async function getBooking(id) {
+  console.log("id", id)
   try{
-    const data = await axiosInstance.get(`/${id}`);
-    return data;
+    const data = await axiosInstance.get(`bookings/${id}`);
+    return data.data.data;
 
   }catch(err) {
     throw new Error('Could not find the Booking')
@@ -80,6 +89,7 @@ export async function updateBooking(id, updateData) {
 
 // Delete a booking
 export async function deleteBooking(id) {
+  console.log("delete:, ",id)
   try {
     const { data } = await axiosInstance.delete(`/bookings/${id}`);
     return data;
