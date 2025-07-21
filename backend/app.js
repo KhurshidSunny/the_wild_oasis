@@ -28,8 +28,16 @@ app.use(express.json( {limit: '20kb'}))
 app.use(morgan('dev'))
 
 
+const allowedOrigins = [
+  'https://the-wild-oasis-murex-gamma.vercel.app',
+  'https://the-wild-oasis-cabin-booking-app.vercel.app', // Vercel frontend (production)
+  'http://localhost:5173',                         // Local dev (Vite default)
+  'http://localhost:3000',                         // If using Create React App
+  'https://khurshid-dev.duckdns.org',              // Direct browser API testing (optional)
+];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://13.233.154.67:8000'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
