@@ -4,9 +4,12 @@ const catchAsync = require('../utils/catchAsync')
 
 
 const createCabin = catchAsync(async (req, res) => {
-        const imageUrl = req.file?.location;
+        const imageUrl = req.file?.location || req.body.image;
         const newCabin = await Cabin.create({
             ...req.body,
+            regularPrice: Number(req.body.regularPrice),
+            discount: Number(req.body.discount),
+            maxCapacity: Number(req.body.maxCapacity),
             image: imageUrl
 
         })

@@ -63,8 +63,12 @@ exports.login = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: "success",
         token,
+        user
     })
 })
+
+
+
 
 
 exports.protect = catchAsync(async(req, res, next) => {
@@ -73,7 +77,6 @@ exports.protect = catchAsync(async(req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
     } 
-    console.log(token)
 
     if(!token) {
         return next(new AppError('You are not logged in. Please login to get access', 401))
@@ -82,11 +85,9 @@ exports.protect = catchAsync(async(req, res, next) => {
     // 2) Verification of token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY)
 
-    console.log("Decoded token:", decoded);
     
     // 3) Check if user still exist
     const user = await User.findById(decoded.id);
-    console.log("User found:", user);
     if(!user) {
         return next(new AppError('The user to this token does no longer exist', 401))
     }
@@ -100,6 +101,30 @@ exports.protect = catchAsync(async(req, res, next) => {
 
     // GRANT ACCESS TO THE PROTECTED ROUTES
     next()
+})
+
+
+exports.updateCurrentUser = catchAsync(async(req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const {name} = req.body;
+    const photo = req.file?.location || req.body.photo;
+
+    console.log("heeeeeeeeeeeeey", req.body.photo)
+    
+    if(!token) {
+        return next(new AppError('you are not logged in. please login again'))
+    }
+
+    const user = await User.findByIdAndUpdate(req.body._id, {name, photo}, {
+        new: true,
+        runValidators: true,
+    })
+
+    res.status(200).json({
+        status: 'success',
+        data: user
+
+    })
 })
 
 
@@ -133,7 +158,6 @@ exports.passwordUpdate = catchAsync(async(req, res, next) => {
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find();
-    console.log(users)
 
     res.status(200).json({
         status: 'success',
@@ -151,7 +175,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 exports.getUser = catchAsync( async (req, res, next) => {
     const {id} = req.params;
 
-    const user = await User.findById(id);
+    const user = await User.findById(id)
 
     if(!user) {
         return next(new AppError('You are not logged in. Please login to get the details'))
@@ -166,9 +190,17 @@ exports.getUser = catchAsync( async (req, res, next) => {
 
 })
 
-exports.getMe = (req, res,next) => {
-    req.params.id = req.user.id;
-    console.log(`Me/ id: ${req.params.id}`)
-    next();
+exports.getMe = async (req, res,next) => {
+    const userId = req.params.userId;
+    const user = await User.findById(userId)
+
+    const token = req.headers.authorization.split(' ')[1];
+    
+
+    console.log(`Hello from Meeeeee`)
+    res.status(200).json({
+        status: 'success',
+        data: {user}
+    })
 }
 

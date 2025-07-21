@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import { useSearchParams } from "react-router-dom";
 import { formatCurrency } from "../../utils/helpers";
 import Stat from "./Stat";
 import {
@@ -10,6 +11,7 @@ import {
 } from "react-icons/hi2";
 
 function Stats({ bookings, confirmedStays, numDays, cabinCount }) {
+
   // 1.
   const numBookings = bookings.length;
 

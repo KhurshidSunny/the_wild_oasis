@@ -90,9 +90,6 @@ const getBookings = catchAsync(async (req, res, next) => {
 
   const skip = (page - 1) * PAGE_SIZE;
 
-  console.log(`filter: ${filter}`)
-  console.log(`sort: ${sort}`)
-  console.log(`skip: ${skip}`)
 
   const bookings = await Booking.find(filter)
     .sort(sort)

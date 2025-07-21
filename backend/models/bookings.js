@@ -14,7 +14,7 @@ const bookingsSchema = new mongoose.Schema({
         type: Number,
         min: 1,
     },
-    extrasprice: Number,
+    extrasPrice: Number,
     status: {
         type: String,
         enum: {
@@ -37,7 +37,9 @@ const bookingsSchema = new mongoose.Schema({
         required: true
     }
 
-}, {
+}, 
+
+{
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
 })
@@ -45,8 +47,9 @@ const bookingsSchema = new mongoose.Schema({
 
 // virtual property
 bookingsSchema.virtual('totalPrice').get(function() {
-    return this.cabinPrice * this.extrasprice;
+    return this.cabinPrice + this.extrasPrice;
 })
+
 
 
 // middleware for populating the cabin and guest from booking table

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { useUser } from "./useUser";
+import Spinner from "../../ui/Spinner";
 
 const StyledUserAvatar = styled.div`
   display: flex;
@@ -22,19 +23,34 @@ const Avatar = styled.img`
   outline: 2px solid var(--color-grey-100);
 `;
 
-function UserAvatar() {
-  const { user } = useUser();
+const FullPage = styled.div`
+  height: 100vh;
+  background: var(--color-grey-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-  const { fullName, avatar } = user.user_metadata;
+function UserAvatar() {
+  const { user, isLoading } = useUser();
+
+    if (isLoading)
+    return (
+      <FullPage>
+        <Spinner />
+      </FullPage>
+    );
+
+  const { name, photo} = user;
   return (
     <div>
       <StyledUserAvatar>
         <Avatar
-          src={avatar || "default-user.jpg"}
-          alt={`avatar of ${fullName}`}
+          src={`${photo}` || "default-user.jpg"}
+          alt={`avatar of ${name}`}
         />
 
-        <span>{fullName}</span>
+        <span>{name}</span>
       </StyledUserAvatar>
     </div>
   );

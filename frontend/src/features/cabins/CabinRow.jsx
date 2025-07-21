@@ -60,7 +60,7 @@ function CabinRow({ cabin }) {
   const { isDeleting, deleteCabin } = useDeleteCabin();
 
   const {
-    id: cabinId,
+    _id,
     name,
     maxCapacity,
     regularPrice,
@@ -79,11 +79,11 @@ function CabinRow({ cabin }) {
       image,
     });
   }
-  const imageUrl = `${import.meta.env.VITE_API_URL}/images/cabins/${image}`;
+
 
   return (
     <Table.Row>
-      <Img src={imageUrl} />
+      <Img src={image} />
       <Cabin>{name}</Cabin>
       <div>fits up to {maxCapacity} guests</div>
       <Price>{formatCurrency(regularPrice)}</Price>
@@ -96,9 +96,9 @@ function CabinRow({ cabin }) {
       <div>
         <Modal>
           <Menus.Menu>
-            <Menus.Toggle id={cabinId} />
+            <Menus.Toggle id={_id} />
 
-            <Menus.List id={cabinId}>
+            <Menus.List id={_id}>
               <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>
                 Duplicate
               </Menus.Button>
@@ -120,7 +120,7 @@ function CabinRow({ cabin }) {
               <ConfirmDelete
                 resourceName="cabins"
                 disabled={isDeleting}
-                onConfirm={() => deleteCabin(cabinId)}
+                onConfirm={() => deleteCabin(_id)}
               />
             </Modal.Window>
           </Menus.Menu>

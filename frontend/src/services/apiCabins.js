@@ -31,8 +31,9 @@ export async function createEditCabin(newCabin, id) {
       return data;
     } else {
       // Create
-      const { data } = await axiosInstance.post("/cabins", formData);
-      return data;
+      const res = await axiosInstance.post("/cabins", formData);
+      console.log(res, "from create cabind duplicate")
+      return res;
     }
   } catch (err) {
     throw new Error("The Cabin could not be created or updated");

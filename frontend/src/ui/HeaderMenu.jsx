@@ -12,10 +12,19 @@ const StyledHeaderMenu = styled.ul`
 
 function HeaderMenu() {
   const navigate = useNavigate();
+
+    const accountHandler = () => {
+      const jwt = localStorage.getItem('jwt');
+      const userId = localStorage.getItem('userId');
+      if(userId && jwt) {
+        navigate('/account')
+      }
+    }
+  
   return (
     <StyledHeaderMenu>
       <li>
-        <ButtonIcon onClick={() => navigate("/account")}>
+        <ButtonIcon onClick={accountHandler}>
           <HiOutlineUser />
         </ButtonIcon>
       </li>

@@ -1,13 +1,19 @@
 import { axiosInstance } from "../../axios";
 
 
+// router.get('/getBookingsAfterDate', bookingController.getBookingsAfterDate)
+// router.get('/getStaysTodayActivity', bookingController.getStaysTodayActivity);
+// router.get('/getStaysAfterDate', bookingController.getStaysAfterDate);
+
 
 export async function getBookingsAfterDate(date) {
   try {
     const res = await axiosInstance.get(`/bookings/getBookingsAfterDate`, {
       params: { date },
     });
-    return res.data.date.bookings;
+
+    // console.log("get bookings after date", res)
+    return res?.data?.date?.bookings;
   } catch (err) {
     throw new Error("Could not fetch bookings after date");
   }
@@ -17,7 +23,8 @@ export async function getBookingsAfterDate(date) {
 export async function getStaysAfterDate(date) {
   try {
     const res = await axiosInstance.get(`/bookings/getStaysAfterDate?date=${date}`);
-    return res.data.data.stays;
+    // console.log("get stays after date", res)
+    return res?.data?.data?.stays;
   } catch (err) {
     throw new Error("Could not fetch stays after the given date");
   }
@@ -28,8 +35,8 @@ export async function getStaysAfterDate(date) {
 export async function getStaysTodayActivity() {
   try {
     const res = await axiosInstance.get('/bookings/getStaysTodayActivity');
-    // console.log(res.data.data.stays)
-    return res.data.data.stays;
+    console.log("today activity", res)
+    return res?.data?.data?.stays;
   } catch (err) {
     throw new Error('Could not fetch today’s stay activity');
   }

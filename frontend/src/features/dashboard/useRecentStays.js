@@ -22,6 +22,7 @@ export function useRecentStays() {
     queryKey: ["stays", `last${numDays}`],
   });
 
+  
   // just need the confirmed bookings
   const confirmedStays = stays?.filter(
     (stay) => stay.status === "checked-in" || stay.status === "checked-out"

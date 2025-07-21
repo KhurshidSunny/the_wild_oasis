@@ -27,9 +27,13 @@ const cabinSchema = new mongoose.Schema({
     discription: String,
     image: String,
     createdAt: Date,
-})
+}, 
+)
 
 
 const Cabin = mongoose.model('Cabin', cabinSchema)
+
+
+
 
 module.exports = Cabin;

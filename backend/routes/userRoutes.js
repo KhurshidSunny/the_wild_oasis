@@ -8,6 +8,7 @@ router.post('/signup',uploadImage, uploadToS3('users'), authController.signup)
 router.post('/login', authController.login)
 // router.patch('/updateMyPassword', authController.protect, authController.passwordUpdate)
 router.patch('/updateMyPassword', authController.passwordUpdate)
+router.patch('/updateCurrentUser', uploadImage, uploadToS3('users'), authController.updateCurrentUser)
 
 
 router.get('/', authController.getAllUsers)

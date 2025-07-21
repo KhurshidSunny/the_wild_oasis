@@ -14,16 +14,13 @@ import { useNavigate } from "react-router-dom";
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  const {
-    user: {
-      email,
-      user_metadata: { fullName: currentFullName },
-    },
-  } = useUser();
+  const {user} = useUser();
+  const {name, email, _id:id} = user;
 
-  const [fullName, setFullName] = useState(currentFullName);
+  const [fullName, setFullName] = useState(name);
   const [avatar, setAvatar] = useState(null);
   const navigate = useNavigate();
+
 
   const { isUpdating, updateUser } = useUpdateUser();
 
@@ -31,19 +28,19 @@ function UpdateUserDataForm() {
     e.preventDefault();
     if (!fullName) return;
     updateUser(
-      { fullName, avatar },
+      { fullName, avatar, email, id},
       {
         onSuccess: () => {
           setAvatar(null);
           e.target.reset();
-          // navigate("/");
+          navigate("/");
         },
       }
     );
   }
 
   function handleCancel() {
-    setFullName(currentFullName);
+    setFullName(name);
     setAvatar(null);
   }
 
