@@ -20,6 +20,7 @@ const app = express();
 // GLOBAL MIDDLEWARE
 app.use(cookieParser())
 
+
 app.use(helmet())
 
 // body parser for json
