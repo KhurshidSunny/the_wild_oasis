@@ -10,7 +10,7 @@ router
   .get(guestController.getGuests)
   .post(guestController.createGuest);
 router
-  .route("/")
+  .route("/:guest_id")
   .patch(guestController.updateGuest)
   .delete(guestController.deleteGuest);
 
