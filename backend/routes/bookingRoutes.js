@@ -3,7 +3,11 @@ const bookingController = require("../controllers/bookingController");
 
 const router = express.Router();
 
-// ✅ Move more specific routes first
+//  more specific routes first
+router.get(
+  "/cabin/:cabinId/booked-dates",
+  bookingController.getBookedDatesByCabinId
+);
 router.get("/guest/:guest_id", bookingController.getBookingsForGuest);
 router.get("/getBookingsAfterDate", bookingController.getBookingsAfterDate);
 router.get("/getStaysTodayActivity", bookingController.getStaysTodayActivity);

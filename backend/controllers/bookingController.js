@@ -1,9 +1,37 @@
 const Booking = require("../models/bookings");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const { eachDayOfInterval } = require("date-fns");
 
 // Default page size
 const PAGE_SIZE = 10;
+
+const getBookedDatesByCabinId = catchAsync(async (req, res, next) => {
+  const { cabinId } = req.params;
+
+  let today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  const bookings = await Booking.find({
+    cabin: cabinId,
+    // $or: [{ status: "checked-in" }],
+  });
+
+  const bookedDates = bookings
+    .map((booking) => {
+      return eachDayOfInterval({
+        start: booking.startDate,
+        end: booking.endDate,
+      });
+    })
+    .flat();
+
+  res.status(200).json({
+    status: "success",
+    total: bookedDates.length,
+    data: bookedDates,
+  });
+});
 
 const getBookingsAfterDate = catchAsync(async (req, res) => {
   const { date } = req.query;
@@ -167,4 +195,5 @@ module.exports = {
   getStaysTodayActivity,
   getStaysAfterDate,
   getBookingsForGuest,
+  getBookedDatesByCabinId,
 };
