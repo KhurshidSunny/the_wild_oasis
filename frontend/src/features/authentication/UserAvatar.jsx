@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { useUser } from "./useUser";
-import Spinner from "../../ui/Spinner";
+import SpinnerMini from "../../ui/SpinnerMini";
+import defaultUserImage from "../../data/img/default-user.jpg";
 
 const StyledUserAvatar = styled.div`
   display: flex;
@@ -10,49 +11,68 @@ const StyledUserAvatar = styled.div`
   font-weight: 500;
   font-size: 1.4rem;
   color: var(--color-grey-600);
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    gap: 0.8rem;
+  }
 `;
 
 const Avatar = styled.img`
   display: block;
-  width: 4rem;
   width: 3.6rem;
+  height: 3.6rem;
   aspect-ratio: 1;
   object-fit: cover;
   object-position: center;
   border-radius: 50%;
   outline: 2px solid var(--color-grey-100);
+  
+  @media (max-width: 768px) {
+    width: 3rem;
+    height: 3rem;
+  }
 `;
 
-const FullPage = styled.div`
-  height: 100vh;
-  background: var(--color-grey-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const UserName = styled.span`
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
 function UserAvatar() {
   const { user, isLoading } = useUser();
 
-    if (isLoading)
+  if (isLoading) {
     return (
-      <FullPage>
-        <Spinner />
-      </FullPage>
-    );
-
-  const { name, photo} = user;
-  return (
-    <div>
       <StyledUserAvatar>
-        <Avatar
-          src={`${photo}` || "default-user.jpg"}
-          alt={`avatar of ${name}`}
-        />
-
-        <span>{name}</span>
+        <SpinnerMini />
       </StyledUserAvatar>
-    </div>
+    );
+  }
+
+  if (!user) return null;
+
+  // Get user name - handle both 'name' and 'fullName' fields
+  const userName = user.name || user.fullName || "User";
+  // Get first name only
+  const firstName = userName.split(" ")[0];
+  
+  // Get photo - handle both 'photo' and 'image' fields, with fallback
+  const userPhoto = user.photo || user.image || defaultUserImage;
+
+  return (
+    <StyledUserAvatar>
+      <Avatar
+        src={userPhoto}
+        alt={`avatar of ${userName}`}
+        onError={(e) => {
+          // Fallback to default image if photo fails to load
+          e.target.src = defaultUserImage;
+        }}
+      />
+      <UserName>{firstName}</UserName>
+    </StyledUserAvatar>
   );
 }
 

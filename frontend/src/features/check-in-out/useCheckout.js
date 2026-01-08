@@ -11,12 +11,14 @@ export function useCheckout() {
         status: "checked-out",
       }),
     onSuccess: (data) => {
-      toast.success(`Booking #${data.id} successfully checked out`);
+      // Get booking ID from response data - handle different response structures
+      const bookingId = data?.id || data?.data?.id || data?.data?._id || "booking";
+      toast.success(`Booking #${bookingId} successfully checked out`);
       queryClient.invalidateQueries({ active: true });
     },
 
-    onError: () => {
-      toast.error("there was an error while checking out");
+    onError: (err) => {
+      toast.error(err?.message || "There was an error while checking out");
     },
   });
 

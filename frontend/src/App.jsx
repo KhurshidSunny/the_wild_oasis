@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import GlobalStyles from "./styles/GlobalStyled";
 import Dashboard from "./pages/Dashboard";
 import Bookings from "./pages/Bookings";
@@ -16,6 +17,7 @@ import Booking from "./pages/Booking";
 import Checkin from "./pages/Checkin";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import { DarkModeProvider } from "./contexts/DarkModeContext";
+import { initializeTestData } from "./test-data/initializeTestData";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +29,11 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  // Initialize test data on app load
+  useEffect(() => {
+    initializeTestData();
+  }, []);
+
   return (
     <DarkModeProvider>
       <QueryClientProvider client={queryClient}>

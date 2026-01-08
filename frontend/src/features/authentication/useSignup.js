@@ -1,27 +1,36 @@
 /* eslint-disable no-unused-vars */
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup as signupApi } from "../../services/apiAuth";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export function useSignup() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  
   const { isLoading, mutate: signup } = useMutation({
     mutationFn: signupApi,
     
-
-    onSuccess: (user) => {
-      if(user.token) {
-        navigate('/dashboard')
+    onSuccess: (data) => {
+      // Handle different response structures
+      const user = data?.data?.user || data?.user || data;
+      const token = data?.token || data?.data?.token;
+      
+      if (token) {
+        // Set user in cache
+        if (user) {
+          queryClient.setQueryData(["user"], user);
+        }
+        queryClient.invalidateQueries({
+          queryKey: ["user"],
+        });
+        navigate('/dashboard');
       }
-      toast.success(
-        `Account successfully created! `
-      );
+      toast.success("Account successfully created!");
     },
     onError: (err) => {
-      // navigate('/users')
-      console.log(err)
-      toast.error(`Error: ${err.response.data.message}`)
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to create user account";
+      toast.error(errorMessage);
     }
   });
 

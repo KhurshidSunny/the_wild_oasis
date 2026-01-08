@@ -7,8 +7,13 @@ export function useDeleteBooking() {
 
   const { isLoading: isDeleting, mutate: deleteBooking } = useMutation({
     mutationFn: deleteBookingApi,
-    onSuccess: () => {
-      toast.success(`The booking  was successfully deleted`);
+    onSuccess: (data) => {
+      // Check if this was a demo mode delete
+      if (data?.demoMode) {
+        toast.success(`The booking was successfully deleted (Demo Mode - data preserved)`);
+      } else {
+        toast.success(`The booking was successfully deleted`);
+      }
 
       queryClient.invalidateQueries({
         queryKey: ["bookings"],
@@ -16,7 +21,8 @@ export function useDeleteBooking() {
     },
     onError: (err) => {
       console.error(err);
-      toast.error(err.message);
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete booking";
+      toast.error(errorMessage);
     },
   });
 

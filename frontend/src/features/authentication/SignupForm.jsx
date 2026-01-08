@@ -108,7 +108,7 @@ function SignupForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>
-          Create new user
+          {isLoading ? "Creating user..." : "Create new user"}
         </Button>
       </FormRow>
     </Form>

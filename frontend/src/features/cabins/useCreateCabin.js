@@ -12,7 +12,10 @@ export function useCreateCabin() {
         queryKey: ["cabins"],
       });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => {
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to create cabin";
+      toast.error(errorMessage);
+    },
   });
 
   return { isCreating, createCabin };

@@ -1,51 +1,61 @@
 import { axiosInstance } from "../../axios";
+import { withTestDataFallback } from "../test-data/apiFallback";
+import { testDataService } from "../test-data/testDataService";
+
+// NOTE: All original backend API code is preserved below.
+// The withTestDataFallback wrapper only activates when backend is unavailable.
+// When backend is available, original API calls execute normally.
 
 // Get all cabins
 export async function getCabins() {
-  try {
-    const { data } = await axiosInstance.get("/cabins");
-    // console.log(data.data)
-    return data.data;
-  } catch (err) {
-    throw new Error("The cabins could not be loaded");
-  }
+  return withTestDataFallback(
+    async () => {
+      const { data } = await axiosInstance.get("/cabins");
+      return data.data;
+    },
+    () => testDataService.getCabins()
+  );
 }
 
 // Create or update cabin (with optional image)
 export async function createEditCabin(newCabin, id) {
-  try {
-    const formData = new FormData();
-    formData.append("name", newCabin.name);
-    formData.append("description", newCabin.description);
-    formData.append("maxCapacity", newCabin.maxCapacity);
-    formData.append("regularPrice", newCabin.regularPrice);
-    formData.append("discount", newCabin.discount);
-    formData.append("image", newCabin.image);
+  return withTestDataFallback(
+    async () => {
+      const formData = new FormData();
+      formData.append("name", newCabin.name);
+      formData.append("description", newCabin.description);
+      formData.append("maxCapacity", newCabin.maxCapacity);
+      formData.append("regularPrice", newCabin.regularPrice);
+      formData.append("discount", newCabin.discount);
+      formData.append("image", newCabin.image);
 
-    if (id) {
-      // Update
-      const { data } = await axiosInstance.patch(
-        `/cabins/${id}`,
-        formData
-      );
-      return data;
-    } else {
-      // Create
-      const res = await axiosInstance.post("/cabins", formData);
-      console.log(res, "from create cabind duplicate")
-      return res;
+      if (id) {
+        const { data } = await axiosInstance.patch(`/cabins/${id}`, formData);
+        return data;
+      } else {
+        const res = await axiosInstance.post("/cabins", formData);
+        return res;
+      }
+    },
+    () => {
+      // For test data, just return success (cabins are pre-loaded)
+      return { status: "success", data: newCabin };
     }
-  } catch (err) {
-    throw new Error("The Cabin could not be created or updated");
-  }
+  );
 }
 
 // Delete a cabin
+// In demo mode, delete appears to work but data is preserved
 export async function deleteCabin(id) {
-  try {
-    const { data } = await axiosInstance.delete(`/cabins/${id}`);
-    return data;
-  } catch (error) {
-    throw new Error("The cabin could not be deleted");
-  }
+  return withTestDataFallback(
+    async () => {
+      // Original backend API call - executes when backend is available
+      const { data } = await axiosInstance.delete(`/cabins/${id}`);
+      return data;
+    },
+    () => {
+      // Test data fallback - safe mode enabled (doesn't actually delete)
+      return testDataService.deleteCabin(id, true);
+    }
+  );
 }

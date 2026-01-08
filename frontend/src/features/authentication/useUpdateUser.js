@@ -8,15 +8,22 @@ export function useUpdateUser() {
   const { isLoading: isUpdating, mutate: updateUser } = useMutation({
     mutationFn: updateCurrentUser,
 
-    onSuccess: ({ user }) => {
+    onSuccess: (data) => {
+      // Handle different response structures
+      const user = data?.user || data?.data?.user || data?.data || data;
       toast.success("User account successfully updated");
-      // setting cache value mannually
-      queryClient.setQueryData(["user"], user);
+      // setting cache value manually
+      if (user) {
+        queryClient.setQueryData(["user"], user);
+      }
       queryClient.invalidateQueries({
         queryKey: ["user"],
       });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => {
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to update user account";
+      toast.error(errorMessage);
+    },
   });
 
   return { isUpdating, updateUser };

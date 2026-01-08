@@ -1,53 +1,62 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRowVertical";
 import Input from "../../ui/Input";
+import Spinner from "../../ui/Spinner";
 
 import { useUser } from "./useUser";
 import FormRowVertical from "../../ui/FormRowVertical";
 import { useUpdateUser } from "./useUpdateUser";
-import { useNavigate } from "react-router-dom";
 
 function UpdateUserDataForm() {
-  // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
-  const {user} = useUser();
-  const {name, email, _id:id} = user;
-
-  const [fullName, setFullName] = useState(name);
-  const [avatar, setAvatar] = useState(null);
-  const navigate = useNavigate();
-
-
+  const { user, isLoading } = useUser();
   const { isUpdating, updateUser } = useUpdateUser();
+
+  // Handle different user field names (name/fullName, _id/id, photo/image)
+  const userName = user?.name || user?.fullName || "";
+  const userEmail = user?.email || "";
+  const userId = user?._id || user?.id || "";
+
+  const [fullName, setFullName] = useState(userName);
+  const [avatar, setAvatar] = useState(null);
+
+  // Update form when user data loads or changes
+  useEffect(() => {
+    if (user) {
+      setFullName(userName);
+    }
+  }, [user, userName]);
+
+  if (isLoading) return <Spinner />;
+  if (!user) return <div>Please log in to update your account</div>;
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!fullName) return;
     updateUser(
-      { fullName, avatar, email, id},
+      { fullName, avatar, email: userEmail, id: userId },
       {
         onSuccess: () => {
           setAvatar(null);
-          e.target.reset();
-          navigate("/");
+          // Form will update automatically via useUser hook
         },
       }
     );
   }
 
   function handleCancel() {
-    setFullName(name);
+    setFullName(userName);
     setAvatar(null);
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormRowVertical label="Email address">
-        <Input value={email} disabled />
+        <Input value={userEmail} disabled />
       </FormRowVertical>
       <FormRowVertical label="Full name">
         <Input
@@ -75,7 +84,9 @@ function UpdateUserDataForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isUpdating}>Update account</Button>
+        <Button disabled={isUpdating}>
+          {isUpdating ? "Updating..." : "Update account"}
+        </Button>
       </FormRow>
     </Form>
   );

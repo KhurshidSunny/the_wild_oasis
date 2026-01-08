@@ -40,7 +40,7 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
           Cancel
         </Button>
         <Button onClick={onConfirm} variation="danger" disabled={disabled}>
-          Delete
+          {disabled ? "Deleting..." : "Delete"}
         </Button>
       </div>
     </StyledConfirmDelete>

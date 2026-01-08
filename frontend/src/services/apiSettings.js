@@ -1,36 +1,50 @@
 import { axiosInstance } from "../../axios";
+import { withTestDataFallback } from "../test-data/apiFallback";
+import { testDataService } from "../test-data/testDataService";
+
+// NOTE: All original backend API code is preserved below.
+// The withTestDataFallback wrapper only activates when backend is unavailable.
+// When backend is available, original API calls execute normally.
 
 
 // Get settings 
 export async function getSettings() {
-  try{
-    const data = await axiosInstance.get('/settings');
-    console.log(data.data.data.settings)
-    return data.data.data.settings[0];
-
-  }catch(err) {
-    throw new Error('Could not get settings')
-  }
+  return withTestDataFallback(
+    async () => {
+      const data = await axiosInstance.get('/settings');
+      return data.data.data.settings[0];
+    },
+    () => testDataService.getSettings()
+  );
 }
 
 // Create settings
 export async function createSetting(newSetting) {
-  try {
-    const { data } = await axiosInstance.post("/settings", newSetting);
-    return data;
-  } catch (err) {
-    throw new Error("Settings could not be created");
-  }
+  return withTestDataFallback(
+    async () => {
+      const { data } = await axiosInstance.post("/settings", newSetting);
+      return data;
+    },
+    () => {
+      // For test data, just return success
+      return { status: "success", data: newSetting };
+    }
+  );
 }
 
 // Update settings
 export async function updateSetting(id, update) {
-  // console.log('id', id)
-  // console.log(`update : ${update}`)
-  try {
-    const { data } = await axiosInstance.patch(`/settings/${id}`, update);
-    return data;
-  } catch (err) {
-    throw new Error("Settings could not be updated");
-  }
+  return withTestDataFallback(
+    async () => {
+      const { data } = await axiosInstance.patch(`/settings/${id}`, update);
+      return data;
+    },
+    () => {
+      // For test data, update the settings in the service
+      const currentSettings = testDataService.getSettings();
+      const updated = { ...currentSettings, ...update };
+      testDataService.settings = updated;
+      return { status: "success", data: updated };
+    }
+  );
 }

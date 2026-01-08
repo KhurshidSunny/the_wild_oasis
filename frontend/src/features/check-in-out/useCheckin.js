@@ -15,13 +15,15 @@ export function useCheckin() {
         ...breakfast,
       }),
     onSuccess: (data) => {
-      toast.success(`Booking #${data.id} successfully checked in`);
+      // Get booking ID from response data - handle different response structures
+      const bookingId = data?.id || data?.data?.id || data?.data?._id || "booking";
+      toast.success(`Booking #${bookingId} successfully checked in`);
       queryClient.invalidateQueries({ active: true });
-      navigate("/");
+      navigate("/bookings");
     },
 
-    onError: () => {
-      toast.error("there was an error while checking in");
+    onError: (err) => {
+      toast.error(err?.message || "There was an error while checking in");
     },
   });
 

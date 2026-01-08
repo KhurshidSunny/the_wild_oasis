@@ -68,7 +68,7 @@ function BookingDetail() {
 
         {status === "checked-in" && (
           <Button onClick={() => checkout(bookingId)} disabled={isCheckingOut}>
-            check out
+            {isCheckingOut ? "Checking out..." : "Check out"}
           </Button>
         )}
 
